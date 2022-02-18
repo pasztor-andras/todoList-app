@@ -1,23 +1,35 @@
 import React, { useState } from "react";
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity, Keyboard } from "react-native";
 import Task from "./components/Task";
 
 export default function App() {
-
   const [task, setTask] = useState();
+  const [taskItems, setTaskItems] = useState([]);
 
   const handleAddTask = () => {
-    
-  }
+    Keyboard.dismiss();
+    setTaskItems([...taskItems, task]);
+    setTask(null);
+  };
+
+  const handleDeleteTask = index => {
+    let itemsCopy = [...taskItems];
+    itemsCopy.splice(index, 1);
+    setTaskItems(itemsCopy);
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.tasksWrapper}>
         <Text style={styles.sectionTitle}>Today's tasks</Text>
         <View style={styles.items}>
-          {/* This is where the tasks will go! */}
-          <Task text={"Task 1"} />
-          <Task text={"Task 2"} />
+          {taskItems.map((item, index) => {
+            return (
+              <Text key={index} onPress={() => handleDeleteTask(index)}>
+                <Task text={item} />
+              </Text>
+            );
+          })}
         </View>
       </View>
       <KeyboardAvoidingView behavior={Platform.OS === "android" ? "padding" : "height"} style={styles.writeTaskWrapper}>
@@ -49,12 +61,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   writeTaskWrapper: {
-    position: 'absolute',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    flexDirection: 'row',
+    position: "absolute",
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
     bottom: 60,
-    width: '100%',
+    width: "100%",
   },
   input: {
     paddingVertical: 15,
@@ -66,15 +78,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(255, 255, 255)",
   },
   addWrapper: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     width: 60,
     height: 60,
     backgroundColor: "rgb(255, 255, 255)",
     borderColor: "rgb(220, 220, 220)",
     borderWidth: 1,
     borderRadius: 60,
-
   },
   addText: {},
 });
